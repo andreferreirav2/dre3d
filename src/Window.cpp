@@ -86,9 +86,11 @@ bool Window::init()
 	return true;
 }
 
-void Window::broadcast()
+bool Window::broadcast()
 {
 	MSG msg{ 0 };
+
+	onUpdate();
 
 	// Get all messages from the OS
 	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) > 0)
@@ -97,8 +99,9 @@ void Window::broadcast()
 		DispatchMessage(&msg);
 	}
 
-	onUpdate();
 	Sleep(1);
+
+	return true;
 }
 
 bool Window::isRunning()

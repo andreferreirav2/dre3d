@@ -1,9 +1,10 @@
 #include "Utils.h"
 #include "GraphicsEngine.h"
+#include "DeviceContext.h"
 
 GraphicsEngine::GraphicsEngine() :
+	mImmediateDeviceContext(nullptr),
 	md3dDevice(nullptr),
-	md3dImmediateContext(nullptr),
 	featureLevel(D3D_FEATURE_LEVEL_11_0),
 	mdxgiDevice(nullptr),
 	mdxgiAdapter(nullptr),
@@ -40,6 +41,7 @@ bool GraphicsEngine::init()
 	int numFeatureLevels = ARRAYSIZE(featureLevels);
 
 	HRESULT hr = 0;
+	ID3D11DeviceContext* d3dImmediateContext = NULL;
 	// Iterate over all driver types to find the best/first that works
 	for (D3D_DRIVER_TYPE const& driverType : driverTypes)
 	{
@@ -55,7 +57,7 @@ bool GraphicsEngine::init()
 			// output variables
 			&md3dDevice,			// resulting d3 device
 			&featureLevel,			// chosen version of DX
-			&md3dImmediateContext
+			&d3dImmediateContext
 		);
 
 		if (SUCCEEDED(hr))
@@ -68,6 +70,8 @@ bool GraphicsEngine::init()
 	//throw std::runtime_error("Failed to D3D11CreateDevice.");
 	CHECK_HR(hr);
 
+	mImmediateDeviceContext = std::make_shared<DeviceContext>(d3dImmediateContext);
+
 	CHECK_HR(md3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
 	CHECK_HR(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
 	CHECK_HR(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
@@ -77,11 +81,12 @@ bool GraphicsEngine::init()
 
 bool GraphicsEngine::release()
 {
+	mImmediateDeviceContext->release();
+
 	RELEASE_COM(mdxgiFactory);
 	RELEASE_COM(mdxgiAdapter);
 	RELEASE_COM(mdxgiDevice);
 
-	RELEASE_COM(md3dImmediateContext);
 	RELEASE_COM(md3dDevice);
 	return true;
 }
@@ -89,4 +94,9 @@ bool GraphicsEngine::release()
 std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain()
 {
 	return std::make_shared<SwapChain>();
+}
+
+std::shared_ptr<DeviceContext> GraphicsEngine::getImmediateDeviceContext()
+{
+	return mImmediateDeviceContext;
 }

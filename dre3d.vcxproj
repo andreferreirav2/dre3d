@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DeviceContext.cpp" />
     <ClCompile Include="src\GraphicsEngine.cpp" />
     <ClCompile Include="src\AppWindow.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DeviceContext.h" />
     <ClInclude Include="src\GraphicsEngine.h" />
     <ClInclude Include="src\AppWindow.h" />
     <ClInclude Include="src\Window.h" />

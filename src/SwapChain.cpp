@@ -3,7 +3,7 @@
 #include "GraphicsEngine.h"
 
 SwapChain::SwapChain() :
-	midxgiSwapChain(nullptr)
+	mSwapChain(nullptr)
 {
 }
 
@@ -37,12 +37,26 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	swapChainDesc.Flags = 0;
 
 	ID3D11Device* d3dDevice = GraphicsEngine::get().md3dDevice;
-	CHECK_HR(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &midxgiSwapChain));
+	CHECK_HR(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &mSwapChain));
+
+	ID3D11Texture2D* buffer = NULL;
+	CHECK_HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer));
+
+	CHECK_HR(d3dDevice->CreateRenderTargetView(buffer, NULL, &mRenderTargetView));
+	RELEASE_COM(buffer);
+
+	return true;
+}
+
+bool SwapChain::present(bool vsync)
+{
+	mSwapChain->Present(vsync, NULL);
 	return true;
 }
 
 bool SwapChain::release()
 {
-	RELEASE_COM(midxgiSwapChain);
+	RELEASE_COM(mRenderTargetView);
+	RELEASE_COM(mSwapChain);
 	return true;
 }

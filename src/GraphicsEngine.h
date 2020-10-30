@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <memory>
 #include "SwapChain.h"
+#include "DeviceContext.h"
 
 class GraphicsEngine
 {
@@ -15,10 +16,12 @@ public:
 	bool release();
 
 	std::shared_ptr<SwapChain> createSwapChain();
+	std::shared_ptr<DeviceContext> getImmediateDeviceContext();
 
 private:
+	std::shared_ptr<DeviceContext> mImmediateDeviceContext;
+
 	ID3D11Device* md3dDevice;
-	ID3D11DeviceContext* md3dImmediateContext;
 	D3D_FEATURE_LEVEL featureLevel;
 
 	IDXGIDevice* mdxgiDevice;

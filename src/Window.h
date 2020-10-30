@@ -7,7 +7,7 @@ public:
 	Window();
 	~Window();
 	bool init();
-	void broadcast();
+	bool broadcast();
 	bool isRunning();
 
 	void virtual onCreate();
