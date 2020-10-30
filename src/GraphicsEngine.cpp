@@ -1,9 +1,13 @@
-#include <stdexcept>
+#include "Utils.h"
 #include "GraphicsEngine.h"
 
-#define SafeRelease(x) { if(x){ x->Release(); x = nullptr; } }
-
-GraphicsEngine::GraphicsEngine() : md3dDevice(nullptr), md3dImmediateContext(nullptr), featureLevel(D3D_FEATURE_LEVEL_11_0)
+GraphicsEngine::GraphicsEngine() :
+	md3dDevice(nullptr),
+	md3dImmediateContext(nullptr),
+	featureLevel(D3D_FEATURE_LEVEL_11_0),
+	mdxgiDevice(nullptr),
+	mdxgiAdapter(nullptr),
+	mdxgiFactory(nullptr)
 {
 }
 
@@ -31,7 +35,7 @@ bool GraphicsEngine::init()
 #endif
 
 	D3D_FEATURE_LEVEL featureLevels[] = {
-		D3D_FEATURE_LEVEL_12_1
+		D3D_FEATURE_LEVEL_11_0
 	};
 	int numFeatureLevels = ARRAYSIZE(featureLevels);
 
@@ -60,19 +64,29 @@ bool GraphicsEngine::init()
 		}
 	}
 
-	if (FAILED(hr))
-	{
-		// what is the impact of throwing rather than returning false?
-		//throw std::runtime_error("Failed to D3D11CreateDevice.");
-		return false;
-	}
+	// what is the impact of throwing rather than returning false?
+	//throw std::runtime_error("Failed to D3D11CreateDevice.");
+	CHECK_HR(hr);
+
+	CHECK_HR(md3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
+	CHECK_HR(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
+	CHECK_HR(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
 
 	return true;
 }
 
 bool GraphicsEngine::release()
 {
-	SafeRelease(md3dImmediateContext);
-	SafeRelease(md3dDevice);
+	RELEASE_COM(mdxgiFactory);
+	RELEASE_COM(mdxgiAdapter);
+	RELEASE_COM(mdxgiDevice);
+
+	RELEASE_COM(md3dImmediateContext);
+	RELEASE_COM(md3dDevice);
 	return true;
+}
+
+std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain()
+{
+	return std::make_shared<SwapChain>();
 }

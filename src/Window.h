@@ -14,6 +14,9 @@ public:
 	void virtual onUpdate();
 	void virtual onDestroy();
 
+	RECT getClientWindowRect();
+	void setHwnd(HWND hwnd);
+
 protected:
 	HWND mhWnd = nullptr;
 	bool mIsRunning = false;

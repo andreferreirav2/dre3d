@@ -11,6 +11,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		auto* const window = reinterpret_cast<Window* const>(params->lpCreateParams);
 
 		SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
+		window->setHwnd(hwnd);
 		window->onCreate();
 		break;
 	}
@@ -122,5 +123,17 @@ void Window::onUpdate()
 void Window::onDestroy()
 {
 	mIsRunning = false;
+}
+
+RECT Window::getClientWindowRect()
+{
+	RECT rc;
+	GetClientRect(mhWnd, &rc);
+	return rc;
+}
+
+void Window::setHwnd(HWND hwnd)
+{
+	mhWnd = hwnd;
 }
 
