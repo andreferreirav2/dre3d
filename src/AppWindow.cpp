@@ -66,7 +66,4 @@ void AppWindow::onUpdate()
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	mVertexBuffer->release();
-	mSwapChain->release();
-	GraphicsEngine::get().release();
 }

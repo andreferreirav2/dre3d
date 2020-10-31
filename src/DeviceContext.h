@@ -15,8 +15,6 @@ public:
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
 	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
 	void setViewportSize(UINT width, UINT height);
-
-	bool release();
 private:
 	ID3D11DeviceContext* mDeviceContext;
 };

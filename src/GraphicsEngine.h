@@ -15,15 +15,14 @@ public:
 	static GraphicsEngine& get();
 
 	bool init();
-	bool release();
 
-	std::shared_ptr<SwapChain> createSwapChain();
-	std::shared_ptr<DeviceContext> getImmediateDeviceContext();
-	std::shared_ptr<VertexBuffer> createVertexBuffer();
+	std::shared_ptr<SwapChain> createSwapChain() const;
+	std::shared_ptr<DeviceContext> getImmediateDeviceContext() const;
+	std::shared_ptr<VertexBuffer> createVertexBuffer() const;
 
 	bool createShaders();
 	bool setShaders();
-	void getShaderBufferAndSize(void** bytecode, UINT* size);
+	void getShaderBufferAndSize(void** bytecode, UINT* size) const;
 
 private:
 	std::shared_ptr<DeviceContext> mImmediateDeviceContext;

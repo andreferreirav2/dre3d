@@ -12,6 +12,8 @@ VertexBuffer::VertexBuffer() :
 
 VertexBuffer::~VertexBuffer()
 {
+	RELEASE_COM(mBuffer);
+	RELEASE_COM(mLayout);
 }
 
 bool VertexBuffer::load(void* vertexList, UINT vertexSize, UINT vertexListSize, void* shaderByteCode, UINT shaderByteSize)
@@ -55,11 +57,4 @@ bool VertexBuffer::load(void* vertexList, UINT vertexSize, UINT vertexListSize, 
 UINT VertexBuffer::getVertexListSize()
 {
 	return mVertexListSize;
-}
-
-bool VertexBuffer::release()
-{
-	RELEASE_COM(mBuffer);
-	RELEASE_COM(mLayout);
-	return true;
 }

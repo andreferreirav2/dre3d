@@ -10,6 +10,9 @@ DeviceContext::DeviceContext(ID3D11DeviceContext* d3dDeviceContext) :
 
 DeviceContext::~DeviceContext()
 {
+	if (mDeviceContext)
+		mDeviceContext->ClearState();
+	RELEASE_COM(mDeviceContext);
 }
 
 void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a)
@@ -42,10 +45,4 @@ void DeviceContext::setViewportSize(UINT width, UINT height)
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 	mDeviceContext->RSSetViewports(1, &viewport);
-}
-
-bool DeviceContext::release()
-{
-	RELEASE_COM(mDeviceContext);
-	return true;
 }

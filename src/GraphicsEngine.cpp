@@ -23,6 +23,16 @@ GraphicsEngine::GraphicsEngine() :
 
 GraphicsEngine::~GraphicsEngine()
 {
+	RELEASE_COM(mVs);
+	RELEASE_COM(mPs);
+	RELEASE_COM(mVsBlob);
+	RELEASE_COM(mPsBlob);
+
+	RELEASE_COM(mdxgiFactory);
+	RELEASE_COM(mdxgiAdapter);
+	RELEASE_COM(mdxgiDevice);
+
+	RELEASE_COM(mDevice);
 }
 
 GraphicsEngine& GraphicsEngine::get()
@@ -87,34 +97,17 @@ bool GraphicsEngine::init()
 	return true;
 }
 
-bool GraphicsEngine::release()
-{
-	RELEASE_COM(mVs);
-	RELEASE_COM(mPs);
-	RELEASE_COM(mVsBlob);
-	RELEASE_COM(mPsBlob);
-
-	RELEASE_COM(mdxgiFactory);
-	RELEASE_COM(mdxgiAdapter);
-	RELEASE_COM(mdxgiDevice);
-
-	mImmediateDeviceContext->release();
-
-	RELEASE_COM(mDevice);
-	return true;
-}
-
-std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain()
+std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain() const
 {
 	return std::make_shared<SwapChain>();
 }
 
-std::shared_ptr<DeviceContext> GraphicsEngine::getImmediateDeviceContext()
+std::shared_ptr<DeviceContext> GraphicsEngine::getImmediateDeviceContext() const
 {
 	return mImmediateDeviceContext;
 }
 
-std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer()
+std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer() const
 {
 	return std::make_shared<VertexBuffer>();
 }
@@ -136,7 +129,7 @@ bool GraphicsEngine::setShaders()
 	return true;
 }
 
-void GraphicsEngine::getShaderBufferAndSize(void** bytecode, UINT* size)
+void GraphicsEngine::getShaderBufferAndSize(void** bytecode, UINT* size) const
 {
 	*bytecode = mVsBlob->GetBufferPointer();
 	*size = (UINT)mVsBlob->GetBufferSize();

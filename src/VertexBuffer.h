@@ -11,7 +11,6 @@ public:
 
 	bool load(void* vertexList, UINT vertexSize, UINT vertexListSize, void* shaderByteCode, UINT shaderByteSize);
 	UINT getVertexListSize();
-	bool release();
 private:
 	UINT mVertexSize;
 	UINT mVertexListSize;

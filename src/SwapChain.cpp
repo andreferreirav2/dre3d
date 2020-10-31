@@ -9,6 +9,7 @@ SwapChain::SwapChain() :
 
 SwapChain::~SwapChain()
 {
+	RELEASE_COM(mSwapChain);
 }
 
 bool SwapChain::init(HWND hwnd, UINT width, UINT height)
@@ -51,11 +52,5 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 bool SwapChain::present(bool vsync)
 {
 	mSwapChain->Present(vsync, NULL);
-	return true;
-}
-
-bool SwapChain::release()
-{
-	RELEASE_COM(mSwapChain);
 	return true;
 }

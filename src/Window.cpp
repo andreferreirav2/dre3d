@@ -111,16 +111,9 @@ bool Window::isRunning()
 	return mIsRunning;
 }
 
-bool Window::release()
-{
-	if (!DestroyWindow(mhWnd))
-		return false;
-
-	return true;
-}
-
 Window::~Window()
 {
+	DestroyWindow(mhWnd);
 }
 
 void Window::onCreate()
