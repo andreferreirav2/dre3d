@@ -45,6 +45,8 @@ bool Window::init()
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance = GetModuleHandle(nullptr);
 	wc.lpszClassName = L"WindowClass";
+	wc.lpszMenuName = L"";
+	wc.style = NULL;
 	wc.lpfnWndProc = &WndProc;
 
 	if (!RegisterClassEx(&wc))
@@ -109,10 +111,16 @@ bool Window::isRunning()
 	return mIsRunning;
 }
 
+bool Window::release()
+{
+	if (!DestroyWindow(mhWnd))
+		return false;
+
+	return true;
+}
+
 Window::~Window()
 {
-	// Destroy Window
-	DestroyWindow(mhWnd);
 }
 
 void Window::onCreate()

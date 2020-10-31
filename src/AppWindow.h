@@ -2,6 +2,7 @@
 #include <memory>
 #include "Window.h"
 #include "SwapChain.h"
+#include "VertexBuffer.h"
 
 
 class AppWindow : public Window
@@ -15,4 +16,5 @@ public:
 
 private:
 	std::shared_ptr<SwapChain> mSwapChain;
+	std::shared_ptr<VertexBuffer> mVertexBuffer;
 };

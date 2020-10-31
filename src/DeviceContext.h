@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 #include <d3d11.h>
-#include "SwapChain.h"
 
+class SwapChain;
+class VertexBuffer;
 
 class DeviceContext
 {
@@ -10,9 +11,13 @@ public:
 	DeviceContext(ID3D11DeviceContext* d3dDeviceContext);
 	~DeviceContext();
 
-	bool clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a);
+	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a);
+	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
+	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
+	void setViewportSize(UINT width, UINT height);
+
 	bool release();
 private:
-	ID3D11DeviceContext* md3dDeviceContext;
+	ID3D11DeviceContext* mDeviceContext;
 };
 

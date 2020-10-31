@@ -1,14 +1,23 @@
 #include "Utils.h"
 #include "GraphicsEngine.h"
+#include "SwapChain.h"
 #include "DeviceContext.h"
+#include "VertexBuffer.h"
+
+#include <d3dcompiler.h>
 
 GraphicsEngine::GraphicsEngine() :
 	mImmediateDeviceContext(nullptr),
-	md3dDevice(nullptr),
+	mImmediateContext(nullptr),
+	mDevice(nullptr),
 	featureLevel(D3D_FEATURE_LEVEL_11_0),
 	mdxgiDevice(nullptr),
 	mdxgiAdapter(nullptr),
-	mdxgiFactory(nullptr)
+	mdxgiFactory(nullptr),
+	mVsBlob(nullptr),
+	mPsBlob(nullptr),
+	mVs(nullptr),
+	mPs(nullptr)
 {
 }
 
@@ -41,7 +50,6 @@ bool GraphicsEngine::init()
 	int numFeatureLevels = ARRAYSIZE(featureLevels);
 
 	HRESULT hr = 0;
-	ID3D11DeviceContext* d3dImmediateContext = NULL;
 	// Iterate over all driver types to find the best/first that works
 	for (D3D_DRIVER_TYPE const& driverType : driverTypes)
 	{
@@ -55,9 +63,9 @@ bool GraphicsEngine::init()
 			numFeatureLevels,		// num of versions of DX in above array
 			D3D11_SDK_VERSION,
 			// output variables
-			&md3dDevice,			// resulting d3 device
+			&mDevice,			// resulting d3 device
 			&featureLevel,			// chosen version of DX
-			&d3dImmediateContext
+			&mImmediateContext
 		);
 
 		if (SUCCEEDED(hr))
@@ -70,9 +78,9 @@ bool GraphicsEngine::init()
 	//throw std::runtime_error("Failed to D3D11CreateDevice.");
 	CHECK_HR(hr);
 
-	mImmediateDeviceContext = std::make_shared<DeviceContext>(d3dImmediateContext);
+	mImmediateDeviceContext = std::make_shared<DeviceContext>(mImmediateContext);
 
-	CHECK_HR(md3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
+	CHECK_HR(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
 	CHECK_HR(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
 	CHECK_HR(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
 
@@ -81,13 +89,18 @@ bool GraphicsEngine::init()
 
 bool GraphicsEngine::release()
 {
-	mImmediateDeviceContext->release();
+	RELEASE_COM(mVs);
+	RELEASE_COM(mPs);
+	RELEASE_COM(mVsBlob);
+	RELEASE_COM(mPsBlob);
 
 	RELEASE_COM(mdxgiFactory);
 	RELEASE_COM(mdxgiAdapter);
 	RELEASE_COM(mdxgiDevice);
 
-	RELEASE_COM(md3dDevice);
+	mImmediateDeviceContext->release();
+
+	RELEASE_COM(mDevice);
 	return true;
 }
 
@@ -99,4 +112,32 @@ std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain()
 std::shared_ptr<DeviceContext> GraphicsEngine::getImmediateDeviceContext()
 {
 	return mImmediateDeviceContext;
+}
+
+std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer()
+{
+	return std::make_shared<VertexBuffer>();
+}
+
+bool GraphicsEngine::createShaders()
+{
+	ID3DBlob* errblob = nullptr;
+	CHECK_HR(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "vsmain", "vs_5_0", NULL, NULL, &mVsBlob, &errblob));
+	CHECK_HR(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &mPsBlob, &errblob));
+	CHECK_HR(mDevice->CreateVertexShader(mVsBlob->GetBufferPointer(), mVsBlob->GetBufferSize(), nullptr, &mVs));
+	CHECK_HR(mDevice->CreatePixelShader(mPsBlob->GetBufferPointer(), mPsBlob->GetBufferSize(), nullptr, &mPs));
+	return true;
+}
+
+bool GraphicsEngine::setShaders()
+{
+	mImmediateContext->VSSetShader(mVs, nullptr, 0);
+	mImmediateContext->PSSetShader(mPs, nullptr, 0);
+	return true;
+}
+
+void GraphicsEngine::getShaderBufferAndSize(void** bytecode, UINT* size)
+{
+	*bytecode = mVsBlob->GetBufferPointer();
+	*size = (UINT)mVsBlob->GetBufferSize();
 }

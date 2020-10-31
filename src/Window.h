@@ -8,6 +8,7 @@ public:
 	~Window();
 	bool init();
 	bool broadcast();
+	bool release();
 	bool isRunning();
 
 	void virtual onCreate();

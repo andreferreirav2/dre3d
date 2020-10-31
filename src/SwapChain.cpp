@@ -36,7 +36,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
-	ID3D11Device* d3dDevice = GraphicsEngine::get().md3dDevice;
+	ID3D11Device* d3dDevice = GraphicsEngine::get().mDevice;
 	CHECK_HR(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &mSwapChain));
 
 	ID3D11Texture2D* buffer = NULL;
@@ -56,7 +56,6 @@ bool SwapChain::present(bool vsync)
 
 bool SwapChain::release()
 {
-	RELEASE_COM(mRenderTargetView);
 	RELEASE_COM(mSwapChain);
 	return true;
 }
