@@ -21,12 +21,9 @@ void AppWindow::onCreate()
 	Vertex vertexList[] =
 	{
 		{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.0f)},
-		{ DirectX::XMFLOAT3(-0.5f, 0.4f, 0.0f)},
-		{ DirectX::XMFLOAT3(0.5f,-0.5f, 0.0f)},
-
 		{ DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f)},
+		{ DirectX::XMFLOAT3(0.5f,-0.5f, 0.0f)},
 		{ DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f)},
-		{ DirectX::XMFLOAT3(0.5f, -0.4f, 0.0f)}
 	};
 
 	mVertexBuffer = GraphicsEngine::get().createVertexBuffer();
@@ -52,7 +49,7 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get().setShaders();
 	GraphicsEngine::get().getImmediateDeviceContext()->setVertexBuffer(mVertexBuffer);
 
-	GraphicsEngine::get().getImmediateDeviceContext()->drawTriangleList(mVertexBuffer->getVertexListSize(), 0);
+	GraphicsEngine::get().getImmediateDeviceContext()->drawTriangleStrip(mVertexBuffer->getVertexListSize(), 0);
 
 	mSwapChain->present(true);
 }

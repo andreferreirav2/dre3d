@@ -15,6 +15,7 @@ public:
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color);
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
 	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
+	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
 	void setViewportSize(UINT width, UINT height);
 private:
 	ID3D11DeviceContext* mDeviceContext;
