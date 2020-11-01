@@ -16,7 +16,7 @@ VertexBuffer::~VertexBuffer()
 	RELEASE_COM(mLayout);
 }
 
-bool VertexBuffer::load(void* vertexList, UINT vertexSize, UINT vertexListSize, void* shaderByteCode, UINT shaderByteSize)
+bool VertexBuffer::load(void* vertexList, size_t vertexSize, size_t vertexListSize, const void* shaderByteCode, size_t shaderByteCodeSize)
 {
 	RELEASE_COM(mBuffer);
 	RELEASE_COM(mLayout);
@@ -47,9 +47,8 @@ bool VertexBuffer::load(void* vertexList, UINT vertexSize, UINT vertexListSize, 
 			0								// UINT InstanceDataStepRate
 		}
 	};
-	UINT layoutSize = ARRAYSIZE(layout);
-	HRESULT hr = GraphicsEngine::get().mDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderByteSize, &mLayout);
-	CHECK_HR(hr);
+	size_t layoutSize = ARRAYSIZE(layout);
+	CHECK_HR(GraphicsEngine::get().mDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderByteCodeSize, &mLayout));
 
 	return true;
 }

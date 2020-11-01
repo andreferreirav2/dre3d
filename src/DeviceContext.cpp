@@ -1,6 +1,7 @@
 #include "DeviceContext.h"
 #include "SwapChain.h"
 #include "VertexBuffer.h"
+#include "VertexShader.h"
 #include "Utils.h"
 
 DeviceContext::DeviceContext(ID3D11DeviceContext* d3dDeviceContext) :
@@ -34,6 +35,11 @@ void DeviceContext::setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
 
 	mDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer->mBuffer, &stride, &offset);
 	mDeviceContext->IASetInputLayout(vertexBuffer->mLayout);
+}
+
+void DeviceContext::setVertexShader(std::shared_ptr<VertexShader> vertexShader)
+{
+	mDeviceContext->VSSetShader(vertexShader->mVertexShader, nullptr, 0);
 }
 
 void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexIndex)

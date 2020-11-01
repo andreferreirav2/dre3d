@@ -3,6 +3,7 @@
 #include "SwapChain.h"
 #include "DeviceContext.h"
 #include "VertexBuffer.h"
+#include "VertexShader.h"
 
 #include <d3dcompiler.h>
 
@@ -14,6 +15,7 @@ GraphicsEngine::GraphicsEngine() :
 	mdxgiDevice(nullptr),
 	mdxgiAdapter(nullptr),
 	mdxgiFactory(nullptr),
+	mBlob(nullptr),
 	mVsBlob(nullptr),
 	mPsBlob(nullptr),
 	mVs(nullptr),
@@ -27,6 +29,7 @@ GraphicsEngine::~GraphicsEngine()
 	RELEASE_COM(mPs);
 	RELEASE_COM(mVsBlob);
 	RELEASE_COM(mPsBlob);
+	RELEASE_COM(mBlob);
 
 	RELEASE_COM(mdxgiFactory);
 	RELEASE_COM(mdxgiAdapter);
@@ -112,25 +115,39 @@ std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer() const
 	return std::make_shared<VertexBuffer>();
 }
 
+std::shared_ptr<VertexShader> GraphicsEngine::createVertexShader(const void* shaderByteCode, size_t shaderByteCodeSize) const
+{
+	std::shared_ptr<VertexShader> vertexShader = std::make_shared<VertexShader>();
+	vertexShader->init(shaderByteCode, shaderByteCodeSize);
+	return vertexShader;
+}
+
+bool GraphicsEngine::compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize)
+{
+	ID3DBlob* errblob = nullptr;
+	CHECK_HR(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "vs_5_0", NULL, NULL, &mBlob, &errblob));
+
+	*shaderByteCode = mBlob->GetBufferPointer();
+	*shaderByteCodeSize = mBlob->GetBufferSize();
+
+	return true;
+}
+
+void GraphicsEngine::releaseCompiledShader()
+{
+	RELEASE_COM(mBlob);
+}
+
 bool GraphicsEngine::createShaders()
 {
 	ID3DBlob* errblob = nullptr;
-	CHECK_HR(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "vsmain", "vs_5_0", NULL, NULL, &mVsBlob, &errblob));
 	CHECK_HR(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &mPsBlob, &errblob));
-	CHECK_HR(mDevice->CreateVertexShader(mVsBlob->GetBufferPointer(), mVsBlob->GetBufferSize(), nullptr, &mVs));
 	CHECK_HR(mDevice->CreatePixelShader(mPsBlob->GetBufferPointer(), mPsBlob->GetBufferSize(), nullptr, &mPs));
 	return true;
 }
 
 bool GraphicsEngine::setShaders()
 {
-	mImmediateContext->VSSetShader(mVs, nullptr, 0);
 	mImmediateContext->PSSetShader(mPs, nullptr, 0);
 	return true;
-}
-
-void GraphicsEngine::getShaderBufferAndSize(void** bytecode, UINT* size) const
-{
-	*bytecode = mVsBlob->GetBufferPointer();
-	*size = (UINT)mVsBlob->GetBufferSize();
 }
