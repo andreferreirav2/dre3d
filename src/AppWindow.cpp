@@ -1,18 +1,12 @@
 #include "AppWindow.h"
+#include "Utils.h"
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
-
-
-struct Vector3
-{
-	float x;
-	float y;
-	float z;
-};
+#include <DirectXMath.h>
 
 struct Vertex
 {
-	Vector3 position;
+	DirectX::XMFLOAT3 position;
 };
 
 void AppWindow::onCreate()
@@ -26,13 +20,13 @@ void AppWindow::onCreate()
 
 	Vertex vertexList[] =
 	{
-		{ -0.5f, -0.5f, 0.0f},
-		{ -0.5f, 0.4f, 0.0f},
-		{ 0.5f,-0.5f, 0.0f},
+		{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.0f)},
+		{ DirectX::XMFLOAT3(-0.5f, 0.4f, 0.0f)},
+		{ DirectX::XMFLOAT3(0.5f,-0.5f, 0.0f)},
 
-		{ -0.5f, 0.5f, 0.0f},
-		{ 0.5f, 0.5f, 0.0f},
-		{ 0.5f, -0.4f, 0.0f}
+		{ DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f)},
+		{ DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f)},
+		{ DirectX::XMFLOAT3(0.5f, -0.4f, 0.0f)}
 	};
 
 	mVertexBuffer = GraphicsEngine::get().createVertexBuffer();
@@ -51,7 +45,7 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	Window::onUpdate();
-	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, 154.0f / 255, 211.0f / 255, 188.0f / 255, 1);
+	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, reinterpret_cast<const float*>(&Colors::Cyan));
 
 	RECT rc = getClientWindowRect();
 	GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);

@@ -3,7 +3,8 @@
 #include "GraphicsEngine.h"
 
 SwapChain::SwapChain() :
-	mSwapChain(nullptr)
+	mSwapChain(nullptr),
+	mRenderTargetView(nullptr)
 {
 }
 

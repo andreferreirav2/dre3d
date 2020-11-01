@@ -12,6 +12,7 @@ public:
 	~DeviceContext();
 
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a);
+	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color);
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
 	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
 	void setViewportSize(UINT width, UINT height);

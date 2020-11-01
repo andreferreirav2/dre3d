@@ -18,7 +18,12 @@ DeviceContext::~DeviceContext()
 void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a)
 {
 	FLOAT clearColor[] = { r,g,b,a };
-	mDeviceContext->ClearRenderTargetView(swapChain->mRenderTargetView, clearColor);
+	clearRenderTargetColor(swapChain, clearColor);
+}
+
+void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color)
+{
+	mDeviceContext->ClearRenderTargetView(swapChain->mRenderTargetView, color);
 	mDeviceContext->OMSetRenderTargets(1, &swapChain->mRenderTargetView, NULL);
 }
 
@@ -40,6 +45,8 @@ void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexIndex)
 void DeviceContext::setViewportSize(UINT width, UINT height)
 {
 	D3D11_VIEWPORT viewport = {};
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
 	viewport.Width = static_cast<FLOAT>(width);
 	viewport.Height = static_cast<FLOAT>(height);
 	viewport.MinDepth = 0.0f;
