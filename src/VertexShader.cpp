@@ -14,6 +14,6 @@ VertexShader::~VertexShader()
 
 bool VertexShader::init(const void* shaderByteCode, size_t shaderByteCodeSize)
 {
-	CHECK_HR(GraphicsEngine::get().mDevice->CreateVertexShader(shaderByteCode, shaderByteCodeSize, nullptr, &mVertexShader));
+	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateVertexShader(shaderByteCode, shaderByteCodeSize, nullptr, &mVertexShader));
 	return true;
 }

@@ -89,13 +89,13 @@ bool GraphicsEngine::init()
 
 	// what is the impact of throwing rather than returning false?
 	//throw std::runtime_error("Failed to D3D11CreateDevice.");
-	CHECK_HR(hr);
+	DX::ThrowIfFailed(hr);
 
 	mImmediateDeviceContext = std::make_shared<DeviceContext>(mImmediateContext);
 
-	CHECK_HR(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
-	CHECK_HR(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
-	CHECK_HR(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
+	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
+	DX::ThrowIfFailed(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
+	DX::ThrowIfFailed(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
 
 	return true;
 }
@@ -125,7 +125,7 @@ std::shared_ptr<VertexShader> GraphicsEngine::createVertexShader(const void* sha
 bool GraphicsEngine::compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize)
 {
 	ID3DBlob* errblob = nullptr;
-	CHECK_HR(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "vs_5_0", NULL, NULL, &mBlob, &errblob));
+	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "vs_5_0", NULL, NULL, &mBlob, &errblob));
 
 	*shaderByteCode = mBlob->GetBufferPointer();
 	*shaderByteCodeSize = mBlob->GetBufferSize();
@@ -141,8 +141,8 @@ void GraphicsEngine::releaseCompiledShader()
 bool GraphicsEngine::createShaders()
 {
 	ID3DBlob* errblob = nullptr;
-	CHECK_HR(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &mPsBlob, &errblob));
-	CHECK_HR(mDevice->CreatePixelShader(mPsBlob->GetBufferPointer(), mPsBlob->GetBufferSize(), nullptr, &mPs));
+	DX::ThrowIfFailed(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &mPsBlob, &errblob));
+	DX::ThrowIfFailed(mDevice->CreatePixelShader(mPsBlob->GetBufferPointer(), mPsBlob->GetBufferSize(), nullptr, &mPs));
 	return true;
 }
 

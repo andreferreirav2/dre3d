@@ -39,12 +39,12 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	swapChainDesc.Flags = 0;
 
 	ID3D11Device* d3dDevice = GraphicsEngine::get().mDevice;
-	CHECK_HR(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &mSwapChain));
+	DX::ThrowIfFailed(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &mSwapChain));
 
 	ID3D11Texture2D* buffer = NULL;
-	CHECK_HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer));
+	DX::ThrowIfFailed(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer));
 
-	CHECK_HR(d3dDevice->CreateRenderTargetView(buffer, NULL, &mRenderTargetView));
+	DX::ThrowIfFailed(d3dDevice->CreateRenderTargetView(buffer, NULL, &mRenderTargetView));
 	RELEASE_COM(buffer);
 
 	return true;
