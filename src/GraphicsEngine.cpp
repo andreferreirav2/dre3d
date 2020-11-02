@@ -4,6 +4,7 @@
 #include "DeviceContext.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
+#include "PixelShader.h"
 
 #include <d3dcompiler.h>
 
@@ -15,20 +16,12 @@ GraphicsEngine::GraphicsEngine() :
 	mdxgiDevice(nullptr),
 	mdxgiAdapter(nullptr),
 	mdxgiFactory(nullptr),
-	mBlob(nullptr),
-	mVsBlob(nullptr),
-	mPsBlob(nullptr),
-	mVs(nullptr),
-	mPs(nullptr)
+	mBlob(nullptr)
 {
 }
 
 GraphicsEngine::~GraphicsEngine()
 {
-	RELEASE_COM(mVs);
-	RELEASE_COM(mPs);
-	RELEASE_COM(mVsBlob);
-	RELEASE_COM(mPsBlob);
 	RELEASE_COM(mBlob);
 
 	RELEASE_COM(mdxgiFactory);
@@ -133,21 +126,25 @@ bool GraphicsEngine::compileVertexShader(const wchar_t* fileName, const char* en
 	return true;
 }
 
+std::shared_ptr<PixelShader> GraphicsEngine::createPixelShader(const void* shaderByteCode, size_t shaderByteCodeSize) const
+{
+	std::shared_ptr<PixelShader> pixelShader = std::make_shared<PixelShader>();
+	pixelShader->init(shaderByteCode, shaderByteCodeSize);
+	return pixelShader;
+}
+
+bool GraphicsEngine::compilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize)
+{
+	ID3DBlob* errblob = nullptr;
+	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "ps_5_0", NULL, NULL, &mBlob, &errblob));
+
+	*shaderByteCode = mBlob->GetBufferPointer();
+	*shaderByteCodeSize = mBlob->GetBufferSize();
+
+	return true;
+}
+
 void GraphicsEngine::releaseCompiledShader()
 {
 	RELEASE_COM(mBlob);
-}
-
-bool GraphicsEngine::createShaders()
-{
-	ID3DBlob* errblob = nullptr;
-	DX::ThrowIfFailed(D3DCompileFromFile(L"src/shader.fx", nullptr, nullptr, "psmain", "ps_5_0", NULL, NULL, &mPsBlob, &errblob));
-	DX::ThrowIfFailed(mDevice->CreatePixelShader(mPsBlob->GetBufferPointer(), mPsBlob->GetBufferSize(), nullptr, &mPs));
-	return true;
-}
-
-bool GraphicsEngine::setShaders()
-{
-	mImmediateContext->PSSetShader(mPs, nullptr, 0);
-	return true;
 }

@@ -45,6 +45,15 @@ bool VertexBuffer::load(void* vertexList, size_t vertexSize, size_t vertexListSi
 			0,								// UINT AlignedByteOffset
 			D3D11_INPUT_PER_VERTEX_DATA,	// D3D11_INPUT_CLASSIFICATION InputSlotClass
 			0								// UINT InstanceDataStepRate
+		},
+		{
+			"COLOR",						// LPCSTR SemanticName
+			0,								// UINT SemanticIndex
+			DXGI_FORMAT_R32G32B32_FLOAT,	// DXGI_FORMAT Format
+			0,								// UINT InputSlot
+			12,								// UINT AlignedByteOffset // 12 bytes after the start of the Vertex
+			D3D11_INPUT_PER_VERTEX_DATA,	// D3D11_INPUT_CLASSIFICATION InputSlotClass
+			0								// UINT InstanceDataStepRate
 		}
 	};
 	size_t layoutSize = ARRAYSIZE(layout);

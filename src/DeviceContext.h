@@ -5,6 +5,7 @@
 class SwapChain;
 class VertexBuffer;
 class VertexShader;
+class PixelShader;
 
 class DeviceContext
 {
@@ -16,6 +17,7 @@ public:
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color);
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
 	void setVertexShader(std::shared_ptr<VertexShader> vertexShader);
+	void setPixelShader(std::shared_ptr<PixelShader> pixelShader);
 	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
 	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
 	void setViewportSize(UINT width, UINT height);

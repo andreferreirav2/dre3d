@@ -1,9 +1,11 @@
 #pragma once
 #include <memory>
 #include "Window.h"
-#include "SwapChain.h"
-#include "VertexBuffer.h"
-#include "VertexShader.h"
+
+class SwapChain;
+class VertexBuffer;
+class VertexShader;
+class PixelShader;
 
 
 class AppWindow : public Window
@@ -19,4 +21,5 @@ private:
 	std::shared_ptr<SwapChain> mSwapChain;
 	std::shared_ptr<VertexBuffer> mVertexBuffer;
 	std::shared_ptr<VertexShader> mVertexShader;
+	std::shared_ptr<PixelShader> mPixelShader;
 };
