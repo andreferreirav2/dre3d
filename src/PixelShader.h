@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <wrl/client.h>
 
 class GraphicsEngine;
 class DeviceContext;
@@ -12,7 +13,7 @@ public:
 private:
 	bool init(const void* shaderByteCode, size_t shaderByteCodeSize);
 
-	ID3D11PixelShader* mPixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
 
 	friend class GraphicsEngine;
 	friend class DeviceContext;

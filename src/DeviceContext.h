@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <d3d11.h>
+#include <wrl/client.h>
 
 class SwapChain;
 class VertexBuffer;
@@ -10,7 +11,7 @@ class PixelShader;
 class DeviceContext
 {
 public:
-	DeviceContext(ID3D11DeviceContext* d3dDeviceContext);
+	DeviceContext(Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3dDeviceContext);
 	~DeviceContext();
 
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a);
@@ -22,6 +23,6 @@ public:
 	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
 	void setViewportSize(UINT width, UINT height);
 private:
-	ID3D11DeviceContext* mDeviceContext;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 };
 

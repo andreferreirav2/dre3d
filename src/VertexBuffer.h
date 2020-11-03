@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <wrl/client.h>
 
 class DeviceContext;
 
@@ -14,8 +15,8 @@ public:
 private:
 	size_t mVertexSize;
 	size_t mVertexListSize;
-	ID3D11Buffer* mBuffer;
-	ID3D11InputLayout* mLayout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> mBuffer;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> mLayout;
 
 	friend class DeviceContext;
 };

@@ -5,7 +5,7 @@
 #include "PixelShader.h"
 #include "Utils.h"
 
-DeviceContext::DeviceContext(ID3D11DeviceContext* d3dDeviceContext) :
+DeviceContext::DeviceContext(Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3dDeviceContext) :
 	mDeviceContext(d3dDeviceContext)
 {
 }
@@ -14,7 +14,6 @@ DeviceContext::~DeviceContext()
 {
 	if (mDeviceContext)
 		mDeviceContext->ClearState();
-	RELEASE_COM(mDeviceContext);
 }
 
 void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a)
@@ -25,8 +24,8 @@ void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain,
 
 void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color)
 {
-	mDeviceContext->ClearRenderTargetView(swapChain->mRenderTargetView, color);
-	mDeviceContext->OMSetRenderTargets(1, &swapChain->mRenderTargetView, NULL);
+	mDeviceContext->ClearRenderTargetView(swapChain->mRenderTargetView.Get(), color);
+	mDeviceContext->OMSetRenderTargets(1, swapChain->mRenderTargetView.GetAddressOf(), NULL);
 }
 
 void DeviceContext::setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
@@ -34,18 +33,18 @@ void DeviceContext::setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
 	UINT stride = vertexBuffer->mVertexSize;
 	UINT offset = 0;
 
-	mDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer->mBuffer, &stride, &offset);
-	mDeviceContext->IASetInputLayout(vertexBuffer->mLayout);
+	mDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer->mBuffer.GetAddressOf(), &stride, &offset);
+	mDeviceContext->IASetInputLayout(vertexBuffer->mLayout.Get());
 }
 
 void DeviceContext::setVertexShader(std::shared_ptr<VertexShader> vertexShader)
 {
-	mDeviceContext->VSSetShader(vertexShader->mVertexShader, nullptr, 0);
+	mDeviceContext->VSSetShader(vertexShader->mVertexShader.Get(), nullptr, 0);
 }
 
 void DeviceContext::setPixelShader(std::shared_ptr<PixelShader> pixelShader)
 {
-	mDeviceContext->PSSetShader(pixelShader->mPixelShader, nullptr, 0);
+	mDeviceContext->PSSetShader(pixelShader->mPixelShader.Get(), nullptr, 0);
 }
 
 void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexIndex)

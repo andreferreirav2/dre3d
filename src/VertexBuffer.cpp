@@ -12,14 +12,12 @@ VertexBuffer::VertexBuffer() :
 
 VertexBuffer::~VertexBuffer()
 {
-	RELEASE_COM(mBuffer);
-	RELEASE_COM(mLayout);
 }
 
 bool VertexBuffer::load(void* vertexList, size_t vertexSize, size_t vertexListSize, const void* shaderByteCode, size_t shaderByteCodeSize)
 {
-	RELEASE_COM(mBuffer);
-	RELEASE_COM(mLayout);
+	mBuffer.Reset();
+	mLayout.Reset();
 
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -34,7 +32,7 @@ bool VertexBuffer::load(void* vertexList, size_t vertexSize, size_t vertexListSi
 	mVertexSize = vertexSize;
 	mVertexListSize = vertexListSize;
 
-	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateBuffer(&bufferDesc, &initData, &mBuffer));
+	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateBuffer(&bufferDesc, &initData, mBuffer.ReleaseAndGetAddressOf()));
 
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
 		{
@@ -57,7 +55,7 @@ bool VertexBuffer::load(void* vertexList, size_t vertexSize, size_t vertexListSi
 		}
 	};
 	size_t layoutSize = ARRAYSIZE(layout);
-	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderByteCodeSize, &mLayout));
+	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateInputLayout(layout, layoutSize, shaderByteCode, shaderByteCodeSize, mLayout.ReleaseAndGetAddressOf()));
 
 	return true;
 }

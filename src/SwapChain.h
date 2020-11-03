@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <wrl/client.h>
 
 class DeviceContext;
 
@@ -12,8 +13,8 @@ public:
 	bool init(HWND hwnd, UINT width, UINT height);
 	bool present(bool vsync);
 private:
-	IDXGISwapChain* mSwapChain;
-	ID3D11RenderTargetView* mRenderTargetView;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
 
 	friend class DeviceContext;
 };

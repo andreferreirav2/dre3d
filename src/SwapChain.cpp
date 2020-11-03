@@ -10,7 +10,6 @@ SwapChain::SwapChain() :
 
 SwapChain::~SwapChain()
 {
-	RELEASE_COM(mSwapChain);
 }
 
 bool SwapChain::init(HWND hwnd, UINT width, UINT height)
@@ -38,14 +37,13 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
-	ID3D11Device* d3dDevice = GraphicsEngine::get().mDevice;
-	DX::ThrowIfFailed(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(d3dDevice, &swapChainDesc, &mSwapChain));
+	DX::ThrowIfFailed(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(GraphicsEngine::get().mDevice.Get(), &swapChainDesc, mSwapChain.ReleaseAndGetAddressOf()));
 
-	ID3D11Texture2D* buffer = NULL;
-	DX::ThrowIfFailed(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer));
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> buffer = NULL;
+	DX::ThrowIfFailed(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)buffer.ReleaseAndGetAddressOf()));
 
-	DX::ThrowIfFailed(d3dDevice->CreateRenderTargetView(buffer, NULL, &mRenderTargetView));
-	RELEASE_COM(buffer);
+	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateRenderTargetView(buffer.Get(), NULL, mRenderTargetView.ReleaseAndGetAddressOf()));
+	buffer.Reset();
 
 	return true;
 }

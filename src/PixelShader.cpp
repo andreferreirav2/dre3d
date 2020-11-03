@@ -9,11 +9,10 @@ PixelShader::PixelShader() :
 
 PixelShader::~PixelShader()
 {
-	RELEASE_COM(mPixelShader);
 }
 
 bool PixelShader::init(const void* shaderByteCode, size_t shaderByteCodeSize)
 {
-	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreatePixelShader(shaderByteCode, shaderByteCodeSize, nullptr, &mPixelShader));
+	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreatePixelShader(shaderByteCode, shaderByteCodeSize, nullptr, mPixelShader.ReleaseAndGetAddressOf()));
 	return true;
 }

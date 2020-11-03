@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include <wrl/client.h>
 #include <memory>
 
 class SwapChain;
@@ -28,21 +29,18 @@ public:
 	bool compilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize);
 	void releaseCompiledShader();
 
-	bool createShaders();
-	bool setShaders();
-
 private:
 	std::shared_ptr<DeviceContext> mImmediateDeviceContext;
-	ID3D11DeviceContext* mImmediateContext;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mImmediateContext;
 
-	ID3D11Device* mDevice;
+	Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
 	D3D_FEATURE_LEVEL featureLevel;
 
-	IDXGIDevice* mdxgiDevice;
-	IDXGIAdapter* mdxgiAdapter;
-	IDXGIFactory* mdxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGIDevice> mdxgiDevice;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> mdxgiAdapter;
+	Microsoft::WRL::ComPtr<IDXGIFactory> mdxgiFactory;
 
-	ID3DBlob* mBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> mBlob;
 
 	friend class SwapChain;
 	friend class VertexBuffer;

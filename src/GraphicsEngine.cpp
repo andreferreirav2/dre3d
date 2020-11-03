@@ -22,13 +22,6 @@ GraphicsEngine::GraphicsEngine() :
 
 GraphicsEngine::~GraphicsEngine()
 {
-	RELEASE_COM(mBlob);
-
-	RELEASE_COM(mdxgiFactory);
-	RELEASE_COM(mdxgiAdapter);
-	RELEASE_COM(mdxgiDevice);
-
-	RELEASE_COM(mDevice);
 }
 
 GraphicsEngine& GraphicsEngine::get()
@@ -61,17 +54,17 @@ bool GraphicsEngine::init()
 	{
 		hr = D3D11CreateDevice(
 			// input variables
-			NULL,					// default adapter
+			NULL, // default adapter
 			driverType,
-			NULL,					// no software device
+			NULL, // no software device
 			createDeviceFlags,
-			featureLevels,			// versions of DX to try, first matching will be chosen
-			numFeatureLevels,		// num of versions of DX in above array
+			featureLevels, // versions of DX to try, first matching will be chosen
+			numFeatureLevels, // num of versions of DX in above array
 			D3D11_SDK_VERSION,
 			// output variables
-			&mDevice,			// resulting d3 device
-			&featureLevel,			// chosen version of DX
-			&mImmediateContext
+			mDevice.ReleaseAndGetAddressOf(), // resulting d3 device
+			&featureLevel, // chosen version of DX
+			mImmediateContext.ReleaseAndGetAddressOf()
 		);
 
 		if (SUCCEEDED(hr))
@@ -86,9 +79,9 @@ bool GraphicsEngine::init()
 
 	mImmediateDeviceContext = std::make_shared<DeviceContext>(mImmediateContext);
 
-	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mdxgiDevice));
-	DX::ThrowIfFailed(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mdxgiAdapter));
-	DX::ThrowIfFailed(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mdxgiFactory));
+	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)mdxgiDevice.GetAddressOf()));
+	DX::ThrowIfFailed(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)mdxgiAdapter.GetAddressOf()));
+	DX::ThrowIfFailed(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)mdxgiFactory.GetAddressOf()));
 
 	return true;
 }
@@ -117,8 +110,8 @@ std::shared_ptr<VertexShader> GraphicsEngine::createVertexShader(const void* sha
 
 bool GraphicsEngine::compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize)
 {
-	ID3DBlob* errblob = nullptr;
-	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "vs_5_0", NULL, NULL, &mBlob, &errblob));
+	Microsoft::WRL::ComPtr<ID3DBlob> errblob = nullptr;
+	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "vs_5_0", NULL, NULL, mBlob.GetAddressOf(), errblob.ReleaseAndGetAddressOf()));
 
 	*shaderByteCode = mBlob->GetBufferPointer();
 	*shaderByteCodeSize = mBlob->GetBufferSize();
@@ -135,8 +128,8 @@ std::shared_ptr<PixelShader> GraphicsEngine::createPixelShader(const void* shade
 
 bool GraphicsEngine::compilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize)
 {
-	ID3DBlob* errblob = nullptr;
-	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "ps_5_0", NULL, NULL, &mBlob, &errblob));
+	Microsoft::WRL::ComPtr<ID3DBlob> errblob = nullptr;
+	DX::ThrowIfFailed(D3DCompileFromFile(fileName, nullptr, nullptr, entryPointName, "ps_5_0", NULL, NULL, mBlob.GetAddressOf(), errblob.ReleaseAndGetAddressOf()));
 
 	*shaderByteCode = mBlob->GetBufferPointer();
 	*shaderByteCodeSize = mBlob->GetBufferSize();
@@ -146,5 +139,5 @@ bool GraphicsEngine::compilePixelShader(const wchar_t* fileName, const char* ent
 
 void GraphicsEngine::releaseCompiledShader()
 {
-	RELEASE_COM(mBlob);
+	mBlob.Reset();
 }

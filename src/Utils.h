@@ -3,7 +3,6 @@
 #include <comdef.h>
 #include <DirectXMath.h>
 
-#define RELEASE_COM(x) { if(x){ x->Release(); x = nullptr; } }
 #define CHECK_HR(hr) { if(FAILED(hr)){ throw std::runtime_error("Failed!!"); } }
 
 namespace DX
