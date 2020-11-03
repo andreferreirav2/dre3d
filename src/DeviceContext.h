@@ -21,7 +21,7 @@ public:
 	void setPixelShader(std::shared_ptr<PixelShader> pixelShader);
 	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
 	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
-	void setViewportSize(UINT width, UINT height);
+	void setViewportSize(UINT width, UINT height, UINT topLeftX = 0, UINT topLeftY = 0);
 private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
 };

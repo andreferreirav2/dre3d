@@ -59,11 +59,11 @@ void DeviceContext::drawTriangleStrip(UINT vertexCount, UINT startVertexIndex)
 	mDeviceContext->Draw(vertexCount, startVertexIndex);
 }
 
-void DeviceContext::setViewportSize(UINT width, UINT height)
+void DeviceContext::setViewportSize(UINT width, UINT height, UINT topLeftX, UINT topLeftY)
 {
 	D3D11_VIEWPORT viewport = {};
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
+	viewport.TopLeftX = static_cast<FLOAT>(topLeftX);
+	viewport.TopLeftY = static_cast<FLOAT>(topLeftY);
 	viewport.Width = static_cast<FLOAT>(width);
 	viewport.Height = static_cast<FLOAT>(height);
 	viewport.MinDepth = 0.0f;

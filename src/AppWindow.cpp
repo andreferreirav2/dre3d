@@ -50,10 +50,13 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	Window::onUpdate();
-	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, reinterpret_cast<const float*>(&Colors::Cyan));
+	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 
 	RECT rc = getClientWindowRect();
-	GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+	// Full screen render
+	//GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+	// Mini mpa render with 1/5th of the size, bottom right corner
+	GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize((rc.right - rc.left) / 5, (rc.bottom - rc.top) / 5, (rc.right - rc.left) * 4 / 5, (rc.bottom - rc.top) * 4 / 5);
 	GraphicsEngine::get().getImmediateDeviceContext()->setVertexShader(mVertexShader);
 	GraphicsEngine::get().getImmediateDeviceContext()->setPixelShader(mPixelShader);
 	GraphicsEngine::get().getImmediateDeviceContext()->setVertexBuffer(mVertexBuffer);
