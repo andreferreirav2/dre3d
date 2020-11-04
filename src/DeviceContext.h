@@ -4,6 +4,7 @@
 #include <wrl/client.h>
 
 class SwapChain;
+class ConstantBuffer;
 class VertexBuffer;
 class VertexShader;
 class PixelShader;
@@ -16,6 +17,8 @@ public:
 
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float r, float g, float b, float a);
 	void clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain, float const* color);
+	void setVSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer);
+	void setPSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer);
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
 	void setVertexShader(std::shared_ptr<VertexShader> vertexShader);
 	void setPixelShader(std::shared_ptr<PixelShader> pixelShader);
@@ -24,5 +27,7 @@ public:
 	void setViewportSize(UINT width, UINT height, UINT topLeftX = 0, UINT topLeftY = 0);
 private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
+
+	friend class ConstantBuffer;
 };
 

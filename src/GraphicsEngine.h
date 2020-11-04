@@ -4,6 +4,7 @@
 #include <memory>
 
 class SwapChain;
+class ConstantBuffer;
 class VertexBuffer;
 class DeviceContext;
 class VertexShader;
@@ -22,6 +23,7 @@ public:
 	std::shared_ptr<SwapChain> createSwapChain() const;
 	std::shared_ptr<DeviceContext> getImmediateDeviceContext() const;
 
+	std::shared_ptr<ConstantBuffer> createConstantBuffer() const;
 	std::shared_ptr<VertexBuffer> createVertexBuffer() const;
 	std::shared_ptr<VertexShader> createVertexShader(const void* shaderByteCode, size_t shaderByteCodeSize) const;
 	bool compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize);
@@ -43,6 +45,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3DBlob> mBlob;
 
 	friend class SwapChain;
+	friend class ConstantBuffer;
 	friend class VertexBuffer;
 	friend class VertexShader;
 	friend class PixelShader;

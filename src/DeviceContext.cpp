@@ -1,5 +1,6 @@
 #include "DeviceContext.h"
 #include "SwapChain.h"
+#include "ConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
@@ -26,6 +27,16 @@ void DeviceContext::clearRenderTargetColor(std::shared_ptr<SwapChain> swapChain,
 {
 	mDeviceContext->ClearRenderTargetView(swapChain->mRenderTargetView.Get(), color);
 	mDeviceContext->OMSetRenderTargets(1, swapChain->mRenderTargetView.GetAddressOf(), NULL);
+}
+
+void DeviceContext::setVSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer)
+{
+	mDeviceContext->VSSetConstantBuffers(0, 1, constantBuffer->mBuffer.GetAddressOf());
+}
+
+void DeviceContext::setPSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer)
+{
+	mDeviceContext->PSSetConstantBuffers(0, 1, constantBuffer->mBuffer.GetAddressOf());
 }
 
 void DeviceContext::setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)

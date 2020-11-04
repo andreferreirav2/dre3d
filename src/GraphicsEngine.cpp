@@ -2,6 +2,7 @@
 #include "GraphicsEngine.h"
 #include "SwapChain.h"
 #include "DeviceContext.h"
+#include "ConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
@@ -100,6 +101,11 @@ std::shared_ptr<SwapChain> GraphicsEngine::createSwapChain() const
 std::shared_ptr<DeviceContext> GraphicsEngine::getImmediateDeviceContext() const
 {
 	return mImmediateDeviceContext;
+}
+
+std::shared_ptr<ConstantBuffer> GraphicsEngine::createConstantBuffer() const
+{
+	return std::make_shared<ConstantBuffer>();
 }
 
 std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer() const

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ConstantBuffer.cpp" />
     <ClCompile Include="src\PixelShader.cpp" />
     <ClCompile Include="src\DeviceContext.cpp" />
     <ClCompile Include="src\GraphicsEngine.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ConstantBuffer.h" />
     <ClInclude Include="src\PixelShader.h" />
     <ClInclude Include="src\DeviceContext.h" />
     <ClInclude Include="src\GraphicsEngine.h" />
