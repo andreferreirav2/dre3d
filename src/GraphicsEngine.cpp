@@ -22,6 +22,12 @@ GraphicsEngine::GraphicsEngine() :
 
 GraphicsEngine::~GraphicsEngine()
 {
+	Microsoft::WRL::ComPtr<ID3D11Debug> pDebug;
+	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(pDebug.ReleaseAndGetAddressOf())));
+	if (pDebug != nullptr)
+	{
+		pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	}
 }
 
 GraphicsEngine& GraphicsEngine::get()
@@ -79,9 +85,9 @@ bool GraphicsEngine::init()
 
 	mImmediateDeviceContext = std::make_shared<DeviceContext>(mImmediateContext);
 
-	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)mdxgiDevice.GetAddressOf()));
-	DX::ThrowIfFailed(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)mdxgiAdapter.GetAddressOf()));
-	DX::ThrowIfFailed(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)mdxgiFactory.GetAddressOf()));
+	DX::ThrowIfFailed(mDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(mdxgiDevice.GetAddressOf())));
+	DX::ThrowIfFailed(mdxgiDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(mdxgiAdapter.GetAddressOf())));
+	DX::ThrowIfFailed(mdxgiAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(mdxgiFactory.GetAddressOf())));
 
 	return true;
 }

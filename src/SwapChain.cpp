@@ -40,7 +40,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	DX::ThrowIfFailed(GraphicsEngine::get().mdxgiFactory->CreateSwapChain(GraphicsEngine::get().mDevice.Get(), &swapChainDesc, mSwapChain.ReleaseAndGetAddressOf()));
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> buffer = NULL;
-	DX::ThrowIfFailed(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)buffer.ReleaseAndGetAddressOf()));
+	DX::ThrowIfFailed(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(buffer.ReleaseAndGetAddressOf())));
 
 	DX::ThrowIfFailed(GraphicsEngine::get().mDevice->CreateRenderTargetView(buffer.Get(), NULL, mRenderTargetView.ReleaseAndGetAddressOf()));
 	buffer.Reset();
