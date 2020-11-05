@@ -152,6 +152,7 @@
     <ClCompile Include="src\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MathHelper.h" />
     <ClInclude Include="src\ConstantBuffer.h" />
     <ClInclude Include="src\PixelShader.h" />
     <ClInclude Include="src\DeviceContext.h" />

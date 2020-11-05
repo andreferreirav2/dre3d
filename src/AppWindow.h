@@ -24,4 +24,10 @@ private:
 	std::shared_ptr<VertexBuffer> mVertexBuffer;
 	std::shared_ptr<VertexShader> mVertexShader;
 	std::shared_ptr<PixelShader> mPixelShader;
+
+	float mOldTime;
+	float mNewTime;
+	float mDeltaTime;
+
+	float mDeltaCycle;
 };

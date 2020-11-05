@@ -15,6 +15,9 @@ struct VS_OUTPUT
 
 cbuffer constant: register(b0)
 {
+	row_major float4x4 world;
+	row_major float4x4 view;
+	row_major float4x4 proj;
 	unsigned int time;
 }
 
@@ -22,7 +25,14 @@ VS_OUTPUT vsmain(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	output.position = lerp(input.position, input.position1, (sin(time / 500.f) + 1.0f) / 2);
+	//lerp(input.position, input.position1, (sin(time / 500.f) + 1.0f) / 2);
+	// local -> world space
+	output.position = mul(input.position, world);
+	// world -> view space
+	output.position = mul(output.position, view);
+	// view -> screen space
+	output.position = mul(output.position, proj);
+
 	output.color = input.color;
 	output.color1 = input.color1;
 

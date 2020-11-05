@@ -1,5 +1,6 @@
 #include "AppWindow.h"
 #include "Utils.h"
+#include "MathHelper.h"
 #include "GraphicsEngine.h"
 #include "DeviceContext.h"
 #include "SwapChain.h"
@@ -9,6 +10,7 @@
 #include "PixelShader.h"
 #include <DirectXMath.h>
 #include <windows.h>
+#include <iostream>
 
 struct Vertex						// 48 bytes
 {
@@ -22,6 +24,9 @@ struct Vertex						// 48 bytes
 __declspec(align(16))
 struct Constant
 {
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMFLOAT4X4 proj;
 	unsigned int time;
 };
 
@@ -57,7 +62,7 @@ void AppWindow::onCreate()
 	mPixelShader = GraphicsEngine::get().createPixelShader(shaderByteCode, shaderByteCodeSize);
 	GraphicsEngine::get().releaseCompiledShader();
 
-	Constant constants = { 0 };
+	Constant constants = { };
 	mConstantBuffer = GraphicsEngine::get().createConstantBuffer();
 	mConstantBuffer->load(&constants, sizeof(Constant));
 }
@@ -73,8 +78,18 @@ void AppWindow::onUpdate()
 	// Mini map render with 1/5th of the size, bottom right corner
 	//GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize((rc.right - rc.left) / 5, (rc.bottom - rc.top) / 5, (rc.right - rc.left) * 4 / 5, (rc.bottom - rc.top) * 4 / 5);
 
+	mDeltaCycle += 0.1f * mDeltaTime;
+	mDeltaCycle = fmod(mDeltaCycle, 1.0f);
+	DirectX::XMMATRIX worldRotate = DirectX::XMMatrixRotationZ(sin(mDeltaCycle * 3.1415) * 50);
+	DirectX::XMMATRIX worldScale = DirectX::XMMatrixScaling(sin(mDeltaCycle * 20), sin(mDeltaCycle * 20), 1);
+	DirectX::XMMATRIX worldTranslate = MathHelper::Lerp(DirectX::XMMatrixTranslation(-2, -2, 0), DirectX::XMMatrixTranslation(2, 2, 0), mDeltaCycle);
 
-	Constant constants = { GetTickCount() };
+	Constant constants = {};
+	DirectX::XMStoreFloat4x4(&constants.world, worldRotate * worldScale * worldTranslate);
+	DirectX::XMStoreFloat4x4(&constants.view, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&constants.proj, DirectX::XMMatrixOrthographicLH((rc.right - rc.left) / 400.0f, (rc.bottom - rc.top) / 400.0f, -4.0f, 4.0f));
+	constants.time = GetTickCount64();
+
 	mConstantBuffer->update(GraphicsEngine::get().getImmediateDeviceContext(), &constants);
 	GraphicsEngine::get().getImmediateDeviceContext()->setVSConstantBuffer(mConstantBuffer);
 	GraphicsEngine::get().getImmediateDeviceContext()->setPSConstantBuffer(mConstantBuffer);
@@ -86,6 +101,11 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get().getImmediateDeviceContext()->drawTriangleStrip(mVertexBuffer->getVertexListSize(), 0);
 
 	mSwapChain->present(true);
+
+
+	mOldTime = mNewTime;
+	mNewTime = GetTickCount64();
+	mDeltaTime = mOldTime ? max((mNewTime - mOldTime) / 1000.0f, 0.0f) : 0.0f;
 }
 
 void AppWindow::onDestroy()
