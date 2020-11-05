@@ -6,6 +6,7 @@
 class SwapChain;
 class ConstantBuffer;
 class VertexBuffer;
+class IndexBuffer;
 class VertexShader;
 class PixelShader;
 
@@ -20,10 +21,12 @@ public:
 	void setVSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer);
 	void setPSConstantBuffer(std::shared_ptr<ConstantBuffer> constantBuffer);
 	void setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer);
+	void setIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer);
 	void setVertexShader(std::shared_ptr<VertexShader> vertexShader);
 	void setPixelShader(std::shared_ptr<PixelShader> pixelShader);
-	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
-	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
+	void drawTriangleList(UINT vertexCount, UINT startVertexLocation);
+	void drawIndexedTriangleList(UINT indexCount, UINT startIndexLocation, UINT baseVertexLocation);
+	void drawTriangleStrip(UINT vertexCount, UINT startVertexLocation);
 	void setViewportSize(UINT width, UINT height, UINT topLeftX = 0, UINT topLeftY = 0);
 private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;

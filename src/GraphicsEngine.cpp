@@ -4,6 +4,7 @@
 #include "DeviceContext.h"
 #include "ConstantBuffer.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
 
@@ -111,6 +112,11 @@ std::shared_ptr<ConstantBuffer> GraphicsEngine::createConstantBuffer() const
 std::shared_ptr<VertexBuffer> GraphicsEngine::createVertexBuffer() const
 {
 	return std::make_shared<VertexBuffer>();
+}
+
+std::shared_ptr<IndexBuffer> GraphicsEngine::createIndexBuffer() const
+{
+	return std::make_shared<IndexBuffer>();
 }
 
 std::shared_ptr<VertexShader> GraphicsEngine::createVertexShader(const void* shaderByteCode, size_t shaderByteCodeSize) const

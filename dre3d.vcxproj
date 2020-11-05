@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\ConstantBuffer.cpp" />
     <ClCompile Include="src\PixelShader.cpp" />
     <ClCompile Include="src\DeviceContext.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="src\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\MathHelper.h" />
     <ClInclude Include="src\ConstantBuffer.h" />
     <ClInclude Include="src\PixelShader.h" />

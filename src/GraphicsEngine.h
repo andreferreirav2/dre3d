@@ -6,6 +6,7 @@
 class SwapChain;
 class ConstantBuffer;
 class VertexBuffer;
+class IndexBuffer;
 class DeviceContext;
 class VertexShader;
 class PixelShader;
@@ -25,6 +26,7 @@ public:
 
 	std::shared_ptr<ConstantBuffer> createConstantBuffer() const;
 	std::shared_ptr<VertexBuffer> createVertexBuffer() const;
+	std::shared_ptr<IndexBuffer> createIndexBuffer() const;
 	std::shared_ptr<VertexShader> createVertexShader(const void* shaderByteCode, size_t shaderByteCodeSize) const;
 	bool compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* shaderByteCodeSize);
 	std::shared_ptr<PixelShader> createPixelShader(const void* shaderByteCode, size_t shaderByteCodeSize) const;
@@ -47,6 +49,7 @@ private:
 	friend class SwapChain;
 	friend class ConstantBuffer;
 	friend class VertexBuffer;
+	friend class IndexBuffer;
 	friend class VertexShader;
 	friend class PixelShader;
 };

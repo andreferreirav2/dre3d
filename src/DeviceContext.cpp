@@ -2,6 +2,7 @@
 #include "SwapChain.h"
 #include "ConstantBuffer.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "Utils.h"
@@ -48,6 +49,11 @@ void DeviceContext::setVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
 	mDeviceContext->IASetInputLayout(vertexBuffer->mLayout.Get());
 }
 
+void DeviceContext::setIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer)
+{
+	mDeviceContext->IASetIndexBuffer(indexBuffer->mBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
 void DeviceContext::setVertexShader(std::shared_ptr<VertexShader> vertexShader)
 {
 	mDeviceContext->VSSetShader(vertexShader->mVertexShader.Get(), nullptr, 0);
@@ -58,16 +64,22 @@ void DeviceContext::setPixelShader(std::shared_ptr<PixelShader> pixelShader)
 	mDeviceContext->PSSetShader(pixelShader->mPixelShader.Get(), nullptr, 0);
 }
 
-void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexIndex)
+void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexLocation)
 {
 	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	mDeviceContext->Draw(vertexCount, startVertexIndex);
+	mDeviceContext->Draw(vertexCount, startVertexLocation);
 }
 
-void DeviceContext::drawTriangleStrip(UINT vertexCount, UINT startVertexIndex)
+void DeviceContext::drawIndexedTriangleList(UINT indexCount, UINT startIndexLocation, UINT baseVertexLocation)
+{
+	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	mDeviceContext->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+}
+
+void DeviceContext::drawTriangleStrip(UINT vertexCount, UINT startVertexLocation)
 {
 	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	mDeviceContext->Draw(vertexCount, startVertexIndex);
+	mDeviceContext->Draw(vertexCount, startVertexLocation);
 }
 
 void DeviceContext::setViewportSize(UINT width, UINT height, UINT topLeftX, UINT topLeftY)

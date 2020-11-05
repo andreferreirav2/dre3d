@@ -5,6 +5,7 @@
 class SwapChain;
 class ConstantBuffer;
 class VertexBuffer;
+class IndexBuffer;
 class VertexShader;
 class PixelShader;
 
@@ -22,12 +23,12 @@ private:
 	std::shared_ptr<SwapChain> mSwapChain;
 	std::shared_ptr<ConstantBuffer> mConstantBuffer;
 	std::shared_ptr<VertexBuffer> mVertexBuffer;
+	std::shared_ptr<IndexBuffer> mIndexBuffer;
 	std::shared_ptr<VertexShader> mVertexShader;
 	std::shared_ptr<PixelShader> mPixelShader;
 
-	float mOldTime;
-	float mNewTime;
+	UINT mOldTime;
+	UINT mNewTime;
 	float mDeltaTime;
-
 	float mDeltaCycle;
 };
