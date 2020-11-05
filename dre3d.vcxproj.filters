@@ -39,9 +39,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="src\AppWindow.cpp">
       <Filter>Game</Filter>
     </ClCompile>

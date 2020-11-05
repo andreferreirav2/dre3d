@@ -88,22 +88,44 @@ bool Window::init()
 	return true;
 }
 
-bool Window::broadcast()
+
+int Window::run()
 {
-	MSG msg{ 0 };
+	MSG msg = { 0 };
 
-	onUpdate();
+	//mTimer.Reset();
 
-	// Get all messages from the OS
-	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) > 0)
+	while (msg.message != WM_QUIT)
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		// Otherwise, do animation/game stuff.
+		else
+		{
+			onUpdate();
+			onDraw();
+			/*
+			mTimer.Tick();
+
+			if (!mAppPaused)
+			{
+				CalculateFrameStats();
+				UpdateScene(mTimer.DeltaTime());
+				DrawScene();
+			}
+			else
+			{
+				Sleep(100);
+			}
+			*/
+		}
+		Sleep(0);
 	}
 
-	Sleep(1);
-
-	return true;
+	return (int)msg.wParam;
 }
 
 bool Window::isRunning()
@@ -121,6 +143,10 @@ void Window::onCreate()
 }
 
 void Window::onUpdate()
+{
+}
+
+void Window::onDraw()
 {
 }
 

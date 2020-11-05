@@ -13,10 +13,20 @@
 #include <windows.h>
 #include <iostream>
 
-struct Vertex						// 48 bytes
+int main()
+{
+	AppWindow app;
+	if (!app.init())
+	{
+		return 1;
+	}
+
+	return app.run();
+}
+
+struct Vertex						// 36 bytes
 {
 	DirectX::XMFLOAT3 position;		// 12 bytes
-	//DirectX::XMFLOAT3 position1;	// 12 bytes
 	DirectX::XMFLOAT3 color;		// 12 bytes
 	DirectX::XMFLOAT3 color1;		// 12 bytes
 };
@@ -101,13 +111,10 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	Window::onUpdate();
-	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 
-	RECT rc = getClientWindowRect();
-	// Full screen render
-	GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
-	// Mini map render with 1/5th of the size, bottom right corner
-	//GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize((rc.right - rc.left) / 5, (rc.bottom - rc.top) / 5, (rc.right - rc.left) * 4 / 5, (rc.bottom - rc.top) * 4 / 5);
+	mOldTime = mNewTime;
+	mNewTime = static_cast<UINT>(GetTickCount64());
+	mDeltaTime = mOldTime ? max((mNewTime - mOldTime) / 1000.0f, 0.0f) : 0.0f;
 
 	mDeltaCycle += 0.1f * mDeltaTime;
 	mDeltaCycle = fmod(mDeltaCycle, 1.0f);
@@ -117,11 +124,26 @@ void AppWindow::onUpdate()
 	DirectX::XMMATRIX worldScale = DirectX::XMMatrixScaling(1, 1, 1);
 	DirectX::XMMATRIX worldTranslate = DirectX::XMMatrixTranslation(0, 0, 0); // MathHelper::Lerp(DirectX::XMMatrixTranslation(-2, -2, 0), DirectX::XMMatrixTranslation(2, 2, 0), mDeltaCycle);
 
+	mWorld = worldRotate * worldScale * worldTranslate;
+	mView = DirectX::XMMatrixIdentity();
+}
+
+void AppWindow::onDraw()
+{
+	Window::onDraw();
+
+	GraphicsEngine::get().getImmediateDeviceContext()->clearRenderTargetColor(mSwapChain, reinterpret_cast<const float*>(&Colors::Black));
+
+	RECT rc = getClientWindowRect();
+	// Full screen render
+	GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+	// Mini map render with 1/5th of the size, bottom right corner
+	//GraphicsEngine::get().getImmediateDeviceContext()->setViewportSize((rc.right - rc.left) / 5, (rc.bottom - rc.top) / 5, (rc.right - rc.left) * 4 / 5, (rc.bottom - rc.top) * 4 / 5);
+
 	Constant constants = {};
-	DirectX::XMStoreFloat4x4(&constants.world, worldRotate * worldScale * worldTranslate);
-	DirectX::XMStoreFloat4x4(&constants.view, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&constants.world, mWorld);
+	DirectX::XMStoreFloat4x4(&constants.view, mView);
 	DirectX::XMStoreFloat4x4(&constants.proj, DirectX::XMMatrixOrthographicLH((rc.right - rc.left) / 400.0f, (rc.bottom - rc.top) / 400.0f, -4.0f, 4.0f));
-	//DirectX::XMStoreFloat4x4(&constants.proj, DirectX::XMMatrixPerspectiveLH((rc.right - rc.left) / 16000.0f, (rc.bottom - rc.top) / 16000.0f, 0.01f, 4.0f));
 	constants.time = static_cast<UINT>(GetTickCount64());
 
 	mConstantBuffer->update(GraphicsEngine::get().getImmediateDeviceContext(), &constants);
@@ -133,16 +155,9 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get().getImmediateDeviceContext()->setVertexBuffer(mVertexBuffer);
 	GraphicsEngine::get().getImmediateDeviceContext()->setIndexBuffer(mIndexBuffer);
 
-	//GraphicsEngine::get().getImmediateDeviceContext()->drawTriangleStrip(mVertexBuffer->getVertexListSize(), 0);
 	GraphicsEngine::get().getImmediateDeviceContext()->drawIndexedTriangleList(mIndexBuffer->getIndexListSize(), 0, 0);
 
-
 	mSwapChain->present(true);
-
-
-	mOldTime = mNewTime;
-	mNewTime = static_cast<UINT>(GetTickCount64());
-	mDeltaTime = mOldTime ? max((mNewTime - mOldTime) / 1000.0f, 0.0f) : 0.0f;
 }
 
 void AppWindow::onDestroy()

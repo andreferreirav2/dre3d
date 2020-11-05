@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <DirectXMath.h>
 #include "Window.h"
 
 class SwapChain;
@@ -17,6 +18,7 @@ public:
 
 	virtual void onCreate() override;
 	virtual void onUpdate() override;
+	virtual void onDraw() override;
 	virtual void onDestroy() override;
 
 private:
@@ -26,6 +28,9 @@ private:
 	std::shared_ptr<IndexBuffer> mIndexBuffer;
 	std::shared_ptr<VertexShader> mVertexShader;
 	std::shared_ptr<PixelShader> mPixelShader;
+
+	DirectX::XMMATRIX mWorld;
+	DirectX::XMMATRIX mView;
 
 	UINT mOldTime;
 	UINT mNewTime;
