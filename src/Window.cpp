@@ -1,5 +1,6 @@
 #include "Window.h"
 #include <stdexcept>
+#include <sstream>
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -93,7 +94,7 @@ int Window::run()
 {
 	MSG msg = { 0 };
 
-	//mTimer.Reset();
+	mTimer.reset();
 
 	while (msg.message != WM_QUIT)
 	{
@@ -102,27 +103,20 @@ int Window::run()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		// Otherwise, do animation/game stuff.
 		else
 		{
-			onUpdate();
-			onDraw();
-			/*
-			mTimer.Tick();
-
-			if (!mAppPaused)
+			mTimer.tick();
+			if (!mTimer.isPaused())
 			{
-				CalculateFrameStats();
-				UpdateScene(mTimer.DeltaTime());
-				DrawScene();
+				calculateFrameStats();
+				onUpdate();
+				onDraw();
 			}
 			else
 			{
 				Sleep(100);
 			}
-			*/
 		}
-		Sleep(0);
 	}
 
 	return (int)msg.wParam;
@@ -131,11 +125,6 @@ int Window::run()
 bool Window::isRunning()
 {
 	return mIsRunning;
-}
-
-Window::~Window()
-{
-	DestroyWindow(mhWnd);
 }
 
 void Window::onCreate()
@@ -150,9 +139,44 @@ void Window::onDraw()
 {
 }
 
+Window::~Window()
+{
+	DestroyWindow(mhWnd);
+}
+
 void Window::onDestroy()
 {
 	mIsRunning = false;
+}
+
+void Window::calculateFrameStats()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	// Compute averages over one second period.
+	if ((mTimer.totalTime() - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+		std::wostringstream outs;
+		outs.precision(6);
+		outs << L"    "
+			<< L"FPS: " << fps << L"    "
+			<< L"Frame Time: " << mspf << L" (ms)";
+		SetWindowText(mhWnd, outs.str().c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
 }
 
 RECT Window::getClientWindowRect()

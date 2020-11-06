@@ -37,6 +37,9 @@
     <Filter Include="GameEngine\GraphicsEngine\IndexBuffer">
       <UniqueIdentifier>{0ccc2314-a0b1-4fab-893e-591f789e8d96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Timer">
+      <UniqueIdentifier>{25c2d573-e143-4582-bf0b-b0f69e8ca14c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AppWindow.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="src\IndexBuffer.cpp">
       <Filter>GameEngine\GraphicsEngine\IndexBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>GameEngine\Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="src\IndexBuffer.h">
       <Filter>GameEngine\GraphicsEngine\IndexBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer.h">
+      <Filter>GameEngine\Timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

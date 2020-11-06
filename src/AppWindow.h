@@ -19,7 +19,6 @@ public:
 	virtual void onCreate() override;
 	virtual void onUpdate() override;
 	virtual void onDraw() override;
-	virtual void onDestroy() override;
 
 private:
 	std::shared_ptr<SwapChain> mSwapChain;

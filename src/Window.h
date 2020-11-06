@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "Timer.h"
 
 class Window
 {
@@ -15,6 +16,8 @@ public:
 	void virtual onDraw();
 	void virtual onDestroy();
 
+	void calculateFrameStats();
+
 	RECT getClientWindowRect();
 	void setHwnd(HWND hwnd);
 
@@ -23,5 +26,7 @@ protected:
 	bool mIsRunning = false;
 	int mWidth;
 	int mHeight;
+
+	Timer mTimer;
 };
 

@@ -112,11 +112,7 @@ void AppWindow::onUpdate()
 {
 	Window::onUpdate();
 
-	mOldTime = mNewTime;
-	mNewTime = static_cast<UINT>(GetTickCount64());
-	mDeltaTime = mOldTime ? max((mNewTime - mOldTime) / 1000.0f, 0.0f) : 0.0f;
-
-	mDeltaCycle += 0.1f * mDeltaTime;
+	mDeltaCycle += 0.1f * mTimer.deltaTime();
 	mDeltaCycle = fmod(mDeltaCycle, 1.0f);
 	DirectX::XMMATRIX worldRotate = DirectX::XMMatrixRotationX(3.1415f / 4)
 		* DirectX::XMMatrixRotationZ(3.1415f / 8)
@@ -158,9 +154,4 @@ void AppWindow::onDraw()
 	GraphicsEngine::get().getImmediateDeviceContext()->drawIndexedTriangleList(mIndexBuffer->getIndexListSize(), 0, 0);
 
 	mSwapChain->present(true);
-}
-
-void AppWindow::onDestroy()
-{
-	Window::onDestroy();
 }
